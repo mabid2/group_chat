@@ -30,6 +30,9 @@ module.exports = function Route(app, server) {
       messages.push({name: data.user, message: data.message});
       io.emit("post_new_message", { new_message: data.message, user: data.user});
     })
+    // socket.on("disconnect", function(data){
+    //   io.emit("logging_off", { new_message: " has left the chat!!"})
+    // })
 
   })
 

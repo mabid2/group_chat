@@ -3,8 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>Group Chat</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/mystyles.css">
+
     <script type="text/javascript">
       $(document).ready(function(){
         var socket = io.connect();
@@ -26,11 +31,13 @@
         socket.on("loaded_messages", function(data){
           $("#error").html(""); //Resetting the error messages
           current_user = data.current_user;
+                $('#currentuser').append("<p>" + current_user + " has joined the chat." + "</p>");
+
           var messages = data.messages;
           var messages_thread = "";
 
           for(var i = 0; i < messages.length; i++){
-            messages_thread += "<p>" + messages[i].name + ": " + messages[i].message + "</p>";
+            messages_thread += "<p>" + messages[i].name + " says: " + messages[i].message + "</p>";
           }
 
           $("#message_board").append(messages_thread);
@@ -38,27 +45,40 @@
 
         $("#new_message").submit(function(){
           socket.emit("new_message", {message: $("#message").val(), user: current_user });
-          // $("#message").val() = "";
+          $("#message").val('');
           return false;
         });
 
         socket.on("post_new_message", function(data){
-          $("#message_board").append("<p>" + data.user + ": " + data.new_message + "</p>");
+          $("#message_board").append("<p>" + data.user + " says: " + data.new_message + "</p>");
         })
+        // socket.on("logging_off", function(data){
+        //   $("#message_board".append("<p>" + current_user + data.new_message + "</p>"));
+        // })
       })
     </script>
   </head>
   <body>
-    <div id="container">
-      <center>
+    <div id="container" class="container">
+
         <div id="error"></div>
-        <h2>Conversation Board</h2>
-        <div id="message_board"></div>
-        <form id="new_message">
-          <input type="text" id="message" placeholder="Enter you Message Here!!">
-          <input type="submit" value="Send">
-        </form>
-      </center>
+        <div class="container">
+
+
+          <h2>Conversation Board</h2>
+          <h5><div id="currentuser"></div></h5>
+
+            <div class="fixed-action-btn horizontal">
+            <a href="/#message" class="waves-effect waves-light btn right-align">Bottom</a>
+            </div>
+          <div id="message_board"></div>
+
+          <form id="new_message">
+            <input type="text" id="message" placeholder="Enter you Message Here!!">
+            <input class="waves-effect waves-light btn" type="submit" value="Send">
+          </form>
+
+      </div>
     </div>
   </body>
 </html>
